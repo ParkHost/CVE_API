@@ -12,7 +12,7 @@
           <button type="submit" id="search" class="btn btn-secondary"
           >Search</button>
         </div>
-        <div class="col-2">test</div>
+        <div class="col-2" v-if="count > 0" >Total found: {{count}}</div>
       </div>
     </form>
 
@@ -65,6 +65,7 @@ export default {
     search: {
       input: '',
     },
+    count: '',
   }),
   mounted() {
     fetch(API_URL)
@@ -75,6 +76,7 @@ export default {
   },
   methods: {
     sendData() {
+      this.CVES = [];
       const options = {
         method: 'POST',
         body: JSON.stringify(this.search),
@@ -85,7 +87,9 @@ export default {
       fetch(SEARCH_URL, options)
         .then(response => response.json())
         .then((result) => {
-          this.CVES = result;
+          console.log(result);
+          this.CVES = result.search;
+          this.count = result.total;
         });
     },
   },

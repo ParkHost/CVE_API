@@ -23,15 +23,30 @@ app.get('/messages', async (req, res) => {
    res.json(message);
 });
 
-app.post('/search', (req, res) => {
-  const response = req.body.input.toString().trim();
+app.post('/search', (req, res, next) => {
+  const rawResponse = req.body.input.toString().trim();
+  const response = `"${rawResponse}"`;
+
   console.log(response);
-  messages.findCVE(response).then((search) => {
-    res.json(search);
-  }).catch((error) => {
-    res.status(500);
-    res.json(error);
-  })
+
+  Promise.all([
+    messages
+      .findCVE(response),
+    messages
+      .count()
+  ])
+  .then(([ search, total ]) => {
+    res.json({
+      search,
+      total
+    });
+  }).catch(next);
+  // messages.findCVE(response).then((search) => {
+  //   res.json(search);
+  // }).catch((error) => {
+  //   res.status(500);
+  //   res.json(error);
+  // })
 });
 
 app.get('/byId', (req, res, next) => {

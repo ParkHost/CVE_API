@@ -20,12 +20,13 @@ function getAll() {
 }
 
 function findCVE(search) {
-  return CVE.find({'$text' : { $search: search}}, { limit: 100});
+  return CVE.find({'$text': { $search: search}}, { limit: 100});
 }
 
-function count() {
-  return CVE.count({});
+function count(param) {
+  return CVE.count({param});
 }
+
 
 function findId(id) {
   return CVE.find({_id: id});
