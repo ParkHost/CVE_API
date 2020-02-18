@@ -16,11 +16,19 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/messages', async (req, res) => {
-  const count = await messages.count();
-  console.log(count);
-  const message = await messages.getAll();
-   res.json(message);
+app.get('/messages', (req, res, next) => {
+  Promise.all([
+      messages
+      .getAll(),
+      messages
+      .count()
+    ])
+    .then(([allResults, total]) => {
+      res.json({
+        allResults,
+        total
+      });
+    }).catch(next);
 });
 
 app.post('/search', (req, res, next) => {
@@ -29,33 +37,19 @@ app.post('/search', (req, res, next) => {
 
   console.log(response);
 
-  Promise.all([
-    messages
-      .findCVE(response),
-    messages
-      .count()
-  ])
-  .then(([ search, total ]) => {
-    res.json({
-      search,
-      total
-    });
-  }).catch(next);
-  // messages.findCVE(response).then((search) => {
-  //   res.json(search);
-  // }).catch((error) => {
-  //   res.status(500);
-  //   res.json(error);
-  // })
+  messages.findCVE(response)
+    .then(result => {
+      res.json(result)
+    }).catch(next);
 });
 
 app.get('/byId', (req, res, next) => {
   const id = req.query.id
   console.log(id);
   messages.findId(id)
-  .then(result => {
-    res.json(result)
-  }).catch(next)
+    .then(result => {
+      res.json(result)
+    }).catch(next)
 });
 
 
@@ -68,4 +62,6 @@ app.use((error, req, res, next) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {console.log(`Listening on ${port}`)})
+app.listen(port, () => {
+  console.log(`Listening on ${port}`)
+})
