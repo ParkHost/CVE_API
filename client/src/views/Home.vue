@@ -24,7 +24,13 @@
       </div>
     </form>
     <div v-if="!loading">
-      <div class="mt-3" v-for="CVE in reversed" :key="CVE._id">
+      <div v-if="CVES.length === 1">
+        <h5 v-if="CVES[0]._id">
+          <router-link :to="{ path: 'byId', query: { id : CVES[0]._id}}">
+                {{CVES}}</router-link>
+        </h5>
+      </div>
+      <div class="mt-3" v-for="CVE in CVES" :key="CVE._id">
         <li class="media" v-if="CVE.references">
           <div class="media-body">
             <h5 class="mt-0 mb-1">
@@ -102,6 +108,10 @@ export default {
           this.CVES = result;
           this.loading = false;
         });
+    },
+    redirect() {
+      /* eslint no-underscore-dangle: 0 */
+      this.$router.push({ path: 'byId', query: { id: this.CVES[0]._id } });
     },
   },
   computed: {
