@@ -12,7 +12,7 @@ const routes = [
     component: Home,
   },
   {
-    path: '/byId',
+    path: '/byId*',
     name: 'CVE Details',
     component: Details,
   },

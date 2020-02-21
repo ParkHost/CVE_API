@@ -26,16 +26,15 @@
     <div v-if="!loading">
       <div v-if="CVES.length === 1">
         <h5 v-if="CVES[0]._id">
-          <router-link :to="{ path: 'byId', query: { id : CVES[0]._id}}">
-                {{CVES}}</router-link>
+          <router-link :to="{ path: 'byId', query: { id : CVES[0]._id}}">{{CVES}}</router-link>
         </h5>
       </div>
       <div class="mt-3" v-for="CVE in CVES" :key="CVE._id">
         <li class="media" v-if="CVE.references">
           <div class="media-body">
             <h5 class="mt-0 mb-1">
-              <router-link :to="{ path: 'byId', query: { id : CVE._id}}">
-                {{CVE.CVE_data_meta.ID}}</router-link>
+              <router-link :to="{ path: 'byId', query:
+              { id : CVE._id}}">{{CVE.CVE_data_meta.ID}}</router-link>
             </h5>
             <h6 class="mt-0 mb-1">Assigned By: {{CVE.CVE_data_meta.ASSIGNER}}</h6>
             {{CVE.description.description_data[0].value}}
@@ -104,9 +103,11 @@ export default {
       fetch(SEARCH_URL, options)
         .then(response => response.json())
         .then((result) => {
-          console.log(result);
           this.CVES = result;
           this.loading = false;
+          if (this.CVES.length === 1) {
+            this.$router.push({ path: 'byId', query: { id: this.CVES[0]._id } });
+          }
         });
     },
     redirect() {
