@@ -32,8 +32,7 @@ app.get('/messages', (req, res, next) => {
 });
 
 app.get('/v2/messages', (req, res, next) => {
-  // let skip = parseInt(req.query.skip) || 0;
-  // let limit = parseInt(req.query.limit) || 10;
+  // Destruction of req.query parameters and default value (sort only)
   let { skip, limit, sort = 'desc'} = req.query;
 
   // Checking for numbers not strings
@@ -41,11 +40,11 @@ app.get('/v2/messages', (req, res, next) => {
   limit = parseInt(limit) || 10;
 
   // limiting the limit
-  // limit = limit > 50 ? 50 : limit;
+  limit = limit > 50 ? 50 : limit;
 
   // Negative numbers
   skip = skip < 0 ? 0 : skip;
-  // limit = Math.min(50, Math.max(1, limit));
+  limit = Math.min(50, Math.max(1, limit));
 
   Promise.all([
     messages

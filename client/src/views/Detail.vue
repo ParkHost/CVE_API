@@ -1,5 +1,5 @@
 <template>
-  <div v-if="CVES[0]">
+  <div class="mt-3" v-if="CVES[0]">
     <div class="card text-white bg-secondary mb-3" style="max-width: 100%;">
       <h5 class="card-header">{{CVES[0].CVE_data_meta.ID}}</h5>
       <div class="card-body">
@@ -14,10 +14,9 @@
       >Vendor Name: {{CVES[0].affects.vendor.vendor_data[0].vendor_name}}</h4>
       <div class="card-body">
         <h6 class="card-title mb-0">{{CVES[0].description.description_data[0].value}}</h6>
-        <p class="card-text">STATE: {{CVES[0].CVE_data_meta.STATE}}</p>
       </div>
     </div>
-    <div>
+    <div v-if="productData[0].product_name != 'n/a'">
       <h4 class="mt-5 mb-0">Version:</h4>
       <table class="table table-striped">
         <thead>
@@ -27,22 +26,18 @@
             <th scope="col">Version</th>
           </tr>
         </thead>
-        <div>
           <tbody v-if="CVES[0].affects">
             <tr v-for="(pd, index) in productData" :key="pd._id">
               <th scope="row">{{index + 1}}</th>
-              <th>{{pd.product_name}}</th>
-              <th v-if="pd.version.version_data.length <= 1"></th>
-              <th v-else>
-                <span
-                  v-for="vd in pd.version.version_data"
-                  :key="vd._id"
-                  class="badge badge-pill badge-light"
-                >{{vd.version_value}}</span>
-              </th>
+              <th scope="row">{{pd.product_name}}</th>
+              <th
+              v-for="vd in pd.version.version_data"
+              :key="vd._id"
+              class="badge badge-pill badge-light">
+                {{vd.version_value}}
+                </th>
             </tr>
           </tbody>
-        </div>
       </table>
     </div>
     <h4 class="mt-5 mb-0">Reference:</h4>
@@ -84,6 +79,7 @@ export default {
       .then(response => response.json())
       .then((result) => {
         this.CVES = result;
+        console.log(this.CVES);
       });
   },
   methods: {

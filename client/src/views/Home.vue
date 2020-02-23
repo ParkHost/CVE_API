@@ -129,8 +129,10 @@ export default {
       fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
         .then(response => response.json())
         .then((result) => {
-          console.log(result);
-          this.CVES = result.cves;
+          console.log(result.cves);
+          this.CVES = this.CVES.concat(result.cves);
+          this.loading = false;
+          console.log(this.CVES);
         });
       loadMoreButton.style.visibility = 'visible';
     },
