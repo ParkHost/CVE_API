@@ -79,7 +79,6 @@ export default {
       .then(response => response.json())
       .then((result) => {
         this.CVES = result;
-        console.log(this.CVES);
       });
   },
   methods: {

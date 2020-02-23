@@ -3,7 +3,7 @@
     <div v-if="loading">
       <h2>Loading...</h2>
     </div>
-    <form @submit.prevent="sendData" v-if="!loading">
+    <form @submit.prevent="searchCVE" v-if="!loading">
       <div class="form-row align-items-center mt-2">
         <div class="col-6">
           <label class="sr-only" for="Search">Input</label>
@@ -73,7 +73,8 @@
       </div>
     </div>
     <div class="button-container">
-      <button @click="loadMore" id="loadMoreButton" class="button-primary"
+      <button @click="loadMore" id="loadMoreButton" v-show="isLoaded"
+      class="btn btn-primary btn-lg"
       >Load More</button>
     </div>
   </div>
@@ -81,7 +82,6 @@
 <script>
 const API_URL = 'http://localhost:3000/v2/messages';
 const SEARCH_URL = 'http://localhost:3000/search';
-const loadMoreButton = document.querySelector('#loadMoreButton');
 let skip = 0;
 const limit = 10;
 
@@ -94,17 +94,18 @@ export default {
     },
     count: '',
     loading: false,
+    isLoaded: false,
   }),
   mounted() {
     fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
       .then(response => response.json())
       .then((result) => {
-        console.log(result);
         this.CVES = result.cves;
+        this.isLoaded = true;
       });
   },
   methods: {
-    sendData() {
+    searchCVE() {
       this.loading = true;
       this.CVES = [];
       const options = {
@@ -129,12 +130,10 @@ export default {
       fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
         .then(response => response.json())
         .then((result) => {
-          console.log(result.cves);
           this.CVES = this.CVES.concat(result.cves);
           this.loading = false;
-          console.log(this.CVES);
+          this.isLoaded = true;
         });
-      loadMoreButton.style.visibility = 'visible';
     },
     loadMore() {
       skip += limit;
