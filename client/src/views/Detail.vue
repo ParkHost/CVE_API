@@ -18,7 +18,7 @@
       </div>
     </div>
     <div>
-      <h4 class="mt-5 mb-0">Versions</h4>
+      <h4 class="mt-5 mb-0">Version:</h4>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -28,7 +28,6 @@
           </tr>
         </thead>
         <div>
-
           <tbody v-if="CVES[0].affects">
             <tr v-for="(pd, index) in productData" :key="pd._id">
               <th scope="row">{{index + 1}}</th>
@@ -46,7 +45,7 @@
         </div>
       </table>
     </div>
-    <p>{{CVES[0].problemtype}}</p>
+    <h4 class="mt-5 mb-0">Reference:</h4>
     <table class="table table-striped">
       <thead>
         <tr>

@@ -62,19 +62,32 @@
             <hr />
           </div>
         </li>
+        <li class="media" v-else>
+          <div class="media-body">
+            <h5><router-link :to="{ path: 'byId', query:
+              { id : CVE._id}}">{{CVE.CVE_data_meta.ID}}</router-link>
+              is {{CVE.CVE_data_meta.STATE}}</h5>
+            <hr />
+          </div>
+        </li>
       </div>
+    </div>
+    <div class="button-container">
+      <button @click="loadMore" id="loadMoreButton" class="button-primary"
+      >Load More</button>
     </div>
   </div>
 </template>
 <script>
-const API_URL = 'http://localhost:3000/messages';
+const API_URL = 'http://localhost:3000/v2/messages';
 const SEARCH_URL = 'http://localhost:3000/search';
+const loadMoreButton = document.querySelector('#loadMoreButton');
+let skip = 0;
+const limit = 10;
 
 export default {
   name: 'home',
   data: () => ({
-    perPage: 5,
-    currentPage: 1,
     CVES: [],
     search: {
       input: '',
@@ -83,10 +96,11 @@ export default {
     loading: false,
   }),
   mounted() {
-    fetch(API_URL)
+    fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
       .then(response => response.json())
       .then((result) => {
-        this.CVES = result.allResults;
+        console.log(result);
+        this.CVES = result.cves;
       });
   },
   methods: {
@@ -106,21 +120,28 @@ export default {
           this.CVES = result;
           this.loading = false;
           if (this.CVES.length === 1) {
+            /* eslint no-underscore-dangle: 0 */
             this.$router.push({ path: 'byId', query: { id: this.CVES[0]._id } });
           }
         });
     },
-    redirect() {
-      /* eslint no-underscore-dangle: 0 */
-      this.$router.push({ path: 'byId', query: { id: this.CVES[0]._id } });
+    listAllCVES() {
+      fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
+        .then(response => response.json())
+        .then((result) => {
+          console.log(result);
+          this.CVES = result.cves;
+        });
+      loadMoreButton.style.visibility = 'visible';
+    },
+    loadMore() {
+      skip += limit;
+      this.listAllCVES();
     },
   },
   computed: {
     rows() {
       return this.CVES.length;
-    },
-    reversed() {
-      return this.CVES.slice().reverse();
     },
   },
 };
@@ -129,5 +150,11 @@ export default {
 <style>
 hr {
   border-top: 1px solid white;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
 }
 </style>

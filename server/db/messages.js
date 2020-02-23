@@ -23,6 +23,10 @@ function findCVE(search) {
   return CVE.find({'$text': { $search: search}}, { limit: 100});
 }
 
+function pagination(skip, limit, sort) {
+  return CVE.find({}, {skip, limit, sort: sort});
+}
+
 function count(param) {
   return CVE.count({param});
 }
@@ -46,5 +50,6 @@ module.exports = {
   getAll,
   findCVE,
   count,
-  findId
+  findId,
+  pagination
 };
