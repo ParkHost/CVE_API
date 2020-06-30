@@ -7,6 +7,7 @@ function getAll() {
 }
 
 function findCVE(search) {
+  console.log(search);
   return CVE.find({'$text': { $search: search }}, { limit: 100});
 }
 

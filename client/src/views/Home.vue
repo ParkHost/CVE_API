@@ -29,6 +29,9 @@
           <router-link :to="{ path: 'byId', query: { id : CVES[0]._id}}">{{CVES}}</router-link>
         </h5>
       </div>
+      <div v-if="CVES.length === 0">
+        <h5 class="mt-5">No Results Found</h5>
+      </div>
       <div class="mt-3" v-for="CVE in CVES" :key="CVE._id">
         <li class="media" v-if="CVE.references">
           <div class="media-body">
@@ -95,6 +98,7 @@ export default {
     count: '',
     loading: false,
     isLoaded: false,
+    noResults: false,
   }),
   mounted() {
     fetch(`${API_URL}?skip=${skip}&limit=${limit}`)
@@ -107,6 +111,7 @@ export default {
   methods: {
     searchCVE() {
       this.loading = true;
+      this.isLoaded = false;
       this.CVES = [];
       const options = {
         method: 'POST',
@@ -132,7 +137,6 @@ export default {
         .then((result) => {
           this.CVES = this.CVES.concat(result.cves);
           this.loading = false;
-          this.isLoaded = true;
         });
     },
     loadMore() {
