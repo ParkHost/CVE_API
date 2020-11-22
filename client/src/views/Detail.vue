@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-const SEARCH_URL = 'http://localhost:3000/byId';
+const SEARCH_URL = 'http://172.31.0.2:3001/byId';
 
 export default {
   name: 'Detail',
